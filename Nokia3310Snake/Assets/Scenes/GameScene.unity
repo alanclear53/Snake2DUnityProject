@@ -507,6 +507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ab7d1f0ae42b34b92ca3b9ab09cefb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreText: {fileID: 1529127044}
 --- !u!1 &461570982
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,7 +701,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -1149,7 +1150,7 @@ MonoBehaviour:
   snakeHeadSprite: {fileID: 21300000, guid: 13d1ab8a00f051e48a5d97bd1b5114a8, type: 3}
   snakeHeadMouthOpenSprite: {fileID: 21300000, guid: 07a04ae47957e8e4ba081c6efa95c357, type: 3}
   snakeBodySprite: {fileID: 21300000, guid: 31e484b3cca705643a563ab5ea5dd35e, type: 3}
-  snakeBodyEatSprite: {fileID: 21300000, guid: 520bd4fe84104424aa1165afac96680b, type: 3}
+  snakeBodyFullStomachSprite: {fileID: 21300000, guid: 520bd4fe84104424aa1165afac96680b, type: 3}
   snakeTailSprite: {fileID: 21300000, guid: 3cef05eeeacbd974ab9a6a41bb6368fc, type: 3}
   foodSprite: {fileID: 21300000, guid: 1f12879189ba9b64980977dce37e9645, type: 3}
 --- !u!4 &1190335332
@@ -1618,6 +1619,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e3de568515883b4ea17acb6f296c965, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
 --- !u!1 &2096590862
 GameObject:
   m_ObjectHideFlags: 0

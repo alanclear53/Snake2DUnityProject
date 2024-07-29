@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameAssets : MonoBehaviour
@@ -9,7 +7,7 @@ public class GameAssets : MonoBehaviour
     public Sprite snakeHeadSprite;
     public Sprite snakeHeadMouthOpenSprite;
     public Sprite snakeBodySprite;
-    public Sprite snakeBodyEatSprite;
+    public Sprite snakeBodyFullStomachSprite;
     public Sprite snakeTailSprite;
     public Sprite foodSprite;
 
