@@ -50,9 +50,9 @@ public class Snake : MonoBehaviour
 
         if (this.IsHeadNearFood(levelgrid.GetFoodPosition()))
         {
-            this.MouthOpened();
+            this.OpenMouth();
         }
-        else this.MouthClosed();
+        else this.CloseMouth();
 
         transform.position = new Vector3(headGridPosition.x, headGridPosition.y);
     }
@@ -89,12 +89,12 @@ public class Snake : MonoBehaviour
         }
     }
 
-    private void MouthOpened()
+    private void OpenMouth()
     {
         this.transform.GetComponent<SpriteRenderer>().sprite = GameAssets.instance.snakeHeadMouthOpenSprite;
     }
 
-    private void MouthClosed()
+    private void CloseMouth()
     {
         this.transform.GetComponent<SpriteRenderer>().sprite = GameAssets.instance.snakeHeadSprite;
     }
@@ -120,8 +120,7 @@ public class Snake : MonoBehaviour
 
     public void UpdateBodyParts()
     {
-        int minLength = Mathf.Min(bodyPartList.Count, movePositionList.Count);
-        for (int i = 0; i < minLength; i++)
+        for (int i = 0; i < bodyPartList.Count; i++)
         {
             bodyPartList[i].SetMovePosition(movePositionList[i]);
 
@@ -180,26 +179,51 @@ public class Snake : MonoBehaviour
             transform.position = new Vector3(snakeMovePosition.GetGridPosition().x, snakeMovePosition.GetGridPosition().y);
 
             float angle;
-            float y = 0;
+            int y = 0;
 
             //поворот тела змеи
-            switch (SnakeMovePosition.GetDirection())
+            if (snakeMovePosition.GetPreviousSnakeMovePosition() != null)
             {
-                default:
-                case InputManager.Direction.Up:
-                    angle = 90;
-                    break;
-                case InputManager.Direction.Down:
-                    angle = -90;
-                    y = 180;
-                    break;
-                case InputManager.Direction.Left:
-                    angle = 0;
-                    y = 180;
-                    break;
-                case InputManager.Direction.Right:
-                    angle = 0;
-                    break;
+                switch (snakeMovePosition.GetPreviousSnakeMovePosition().GetDirection())
+                {
+                    default:
+                    case InputManager.Direction.Up:
+                        angle = 90;
+                        break;
+                    case InputManager.Direction.Down:
+                        angle = -90;
+                        y = 180;
+                        break;
+                    case InputManager.Direction.Left:
+                        angle = 0;
+                        y = 180;
+                        break;
+                    case InputManager.Direction.Right:
+                        angle = 0;
+                        break;
+                }
+            }
+            else
+            {
+                // Если это первый элемент тела змеи, то устанавливаем направление на основе головы змеи
+                switch (snakeMovePosition.GetDirection())
+                {
+                    default:
+                    case InputManager.Direction.Up:
+                        angle = 90;
+                        break;
+                    case InputManager.Direction.Down:
+                        angle = -90;
+                        y = 180;
+                        break;
+                    case InputManager.Direction.Left:
+                        angle = 0;
+                        y = 180;
+                        break;
+                    case InputManager.Direction.Right:
+                        angle = 0;
+                        break;
+                }
             }
 
             transform.eulerAngles = new Vector3(0, y, angle);
@@ -245,6 +269,11 @@ public class Snake : MonoBehaviour
             {
                 return previousSnakeMovePosition.direction;
             }
+        }
+
+        public SnakeMovePosition GetPreviousSnakeMovePosition()
+        {
+            return previousSnakeMovePosition;
         }
     }
 }
