@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class Snake : MonoBehaviour
@@ -14,6 +15,7 @@ public class Snake : MonoBehaviour
     public Vector2Int headGridPosition { get; private set; }
 
     private LevelGrid levelgrid;
+    private FoodContainer foodContainer;
 
     public int bodySize;
 
@@ -23,9 +25,10 @@ public class Snake : MonoBehaviour
     private Vector2Int startingPosition = new(15, 15);
 
 
-    public void Setup(LevelGrid levelgrid)
+    public void Setup(LevelGrid levelgrid, FoodContainer foodContainer)
     {
         this.levelgrid = levelgrid;
+        this.foodContainer = foodContainer;
 
         headGridPosition = startingPosition;
         bodySize = 0;
@@ -48,7 +51,7 @@ public class Snake : MonoBehaviour
 
         levelgrid.cell[headGridPosition.x, headGridPosition.y].SetOccupiedBySnake();
 
-        if (this.IsHeadNearFood(levelgrid.GetFoodPosition()))
+        if (this.IsHeadNearFood())
         {
             this.OpenMouth();
         }
@@ -99,15 +102,19 @@ public class Snake : MonoBehaviour
         this.transform.GetComponent<SpriteRenderer>().sprite = GameAssets.instance.snakeHeadSprite;
     }
 
-    public bool IsHeadNearFood(Vector2Int foodPosition)
+    public bool IsHeadNearFood()
     {
-        if (Vector2.Distance(headGridPosition, foodPosition) <= 1f)
+        foreach (Food food in foodContainer.GetFoodList())
         {
-            return true;
+            if (Vector2.Distance(headGridPosition, food.GetPosition()) <= 1f)
+            {
+                return true;
+            }
         }
 
         return false;
     }
+
     public void SetHeadGridMoveDirection(InputManager.Direction direction)
     {
         this.headGridMoveDirection = direction;

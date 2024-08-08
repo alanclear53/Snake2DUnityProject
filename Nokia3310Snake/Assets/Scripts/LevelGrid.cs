@@ -13,6 +13,7 @@ public class LevelGrid
 
     private Snake snake;
     public Food food;
+    private FoodContainer foodContainer;
 
     public LevelGrid(int width, int height)
     {
@@ -30,10 +31,10 @@ public class LevelGrid
         }
     }
 
-    public void Setup(Snake snake, Food food)
+    public void Setup(Snake snake, FoodContainer foodContainer)
     {
         this.snake = snake;
-        this.food = food;
+        this.foodContainer = foodContainer;
     }
 
     public Vector2Int ValidateCrossedBorder(Vector2Int gridPosition)
@@ -52,7 +53,11 @@ public class LevelGrid
 
     public Vector2Int GetFoodPosition()
     {
-        return food.GetPosition();
+        foreach (Food food in foodContainer.GetFoodList())
+        {
+            return food.GetPosition();
+        }
+        return Vector2Int.zero;
     }
 }
 
