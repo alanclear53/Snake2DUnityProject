@@ -53,9 +53,9 @@ public class Snake : MonoBehaviour
 
         if (this.IsHeadNearFood())
         {
-            this.OpenMouth();
+            this.UpdateMouth(true);
         }
-        else this.CloseMouth();
+        else this.UpdateMouth(false);
 
         transform.position = new Vector3(headGridPosition.x, headGridPosition.y);
     }
@@ -71,35 +71,31 @@ public class Snake : MonoBehaviour
 
     public void MoveAndRotateHead()
     {
-        Vector2Int gridMoveDirectionVector;
         switch (headGridMoveDirection)
         {
-            default:
-            case InputManager.Direction.Right: gridMoveDirectionVector = new Vector2Int(+1, 0); break;
-            case InputManager.Direction.Left: gridMoveDirectionVector = new Vector2Int(-1, 0); break;
-            case InputManager.Direction.Up: gridMoveDirectionVector = new Vector2Int(0, +1); break;
-            case InputManager.Direction.Down: gridMoveDirectionVector = new Vector2Int(0, -1); break;
-        }
-        headGridPosition += gridMoveDirectionVector;
-
-        switch (headGridMoveDirection)
-        {
-            default:
-            case InputManager.Direction.Right: transform.eulerAngles = new Vector3(0, 0, 0); break;
-            case InputManager.Direction.Left: transform.eulerAngles = new Vector3(-180, 0, 180); break;
-            case InputManager.Direction.Up: transform.eulerAngles = new Vector3(0, 0, 90); break;
-            case InputManager.Direction.Down: transform.eulerAngles = new Vector3(0, 180, -90); break;
+            case InputManager.Direction.Right:
+                headGridPosition += new Vector2Int(+1, 0);
+                transform.eulerAngles = new Vector3(0, 0, 0);
+                break;
+            case InputManager.Direction.Left:
+                headGridPosition += new Vector2Int(-1, 0);
+                transform.eulerAngles = new Vector3(-180, 0, 180);
+                break;
+            case InputManager.Direction.Up:
+                headGridPosition += new Vector2Int(0, +1);
+                transform.eulerAngles = new Vector3(0, 0, 90);
+                break;
+            case InputManager.Direction.Down:
+                headGridPosition += new Vector2Int(0, -1);
+                transform.eulerAngles = new Vector3(0, 180, -90);
+                break;
         }
     }
 
-    private void OpenMouth()
+    private void UpdateMouth(bool isOpen)
     {
-        this.transform.GetComponent<SpriteRenderer>().sprite = GameAssets.instance.snakeHeadMouthOpenSprite;
-    }
-
-    private void CloseMouth()
-    {
-        this.transform.GetComponent<SpriteRenderer>().sprite = GameAssets.instance.snakeHeadSprite;
+        Sprite sprite = isOpen ? GameAssets.instance.snakeHeadMouthOpenSprite : GameAssets.instance.snakeHeadSprite;
+        this.transform.GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
     public bool IsHeadNearFood()
@@ -144,15 +140,9 @@ public class Snake : MonoBehaviour
 
         Vector2Int snakeBodyPartPositionInt = new Vector2Int(Mathf.RoundToInt(bodyPart.GetGridPosition().x), Mathf.RoundToInt(bodyPart.GetGridPosition().y));
 
-        if (levelgrid.cell[snakeBodyPartPositionInt.x, snakeBodyPartPositionInt.y].IsOccupiedByFood()
-            && levelgrid.cell[snakeBodyPartPositionInt.x, snakeBodyPartPositionInt.y].IsOccupiedBySnake())
-        {
-            bodyPart.transform.GetComponent<SpriteRenderer>().sprite = GameAssets.instance.snakeBodyFullStomachSprite;
-        }
-        else
-        {
-            bodyPart.transform.GetComponent<SpriteRenderer>().sprite = GameAssets.instance.snakeBodySprite;
-        }
+        bodyPart.transform.GetComponent<SpriteRenderer>().sprite = levelgrid.cell[snakeBodyPartPositionInt.x, snakeBodyPartPositionInt.y].IsOccupiedByFood() && levelgrid.cell[snakeBodyPartPositionInt.x, snakeBodyPartPositionInt.y].IsOccupiedBySnake()
+            ? GameAssets.instance.snakeBodyFullStomachSprite
+            : GameAssets.instance.snakeBodySprite;
     }
 
     public List<Vector2Int> GetFullGridPositionList()

@@ -1,23 +1,21 @@
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UIElements;
-using static Snake;
 using System.Collections;
+using System.Linq;
+using UnityEngine;
+using static Snake;
 
 public class GameHandler : MonoBehaviour
 {
-    private static GameHandler instance;
-    private static int score;
-
     [SerializeField] private Snake snake;
-    public static event Action<int> OnScoreChanged;
 
+    private static GameHandler instance;
     private LevelGrid levelGrid;
     private InputManager userInputManager;
     private FoodContainer foodContainer;
     public Food food;
+
+    private static int score;
+    public static event Action<int> OnScoreChanged;
 
     private float moveIntervalTimer;
     private const float moveIntervalTimerMax = 0.2f;
@@ -29,14 +27,13 @@ public class GameHandler : MonoBehaviour
         levelGrid = new LevelGrid(30, 30);
         userInputManager = new InputManager();
         moveIntervalTimer = moveIntervalTimerMax;
+
         InitializeStatic();
     }
 
     private void Start()
     {
-
         snake.state = Snake.State.Alive;
-
         foodContainer = new FoodContainer();
         foodContainer.SpawnFood(levelGrid, 1, FoodType.Regular);
 
@@ -46,7 +43,8 @@ public class GameHandler : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
             if (isGamePaused())
             {
                 GameHandler.ResumeGame();
@@ -61,7 +59,7 @@ public class GameHandler : MonoBehaviour
         {
             case Snake.State.Alive:
 
-                UpdateMoveInterval();
+                IncreaseMoveIntervalTimer();
                 snake.SetHeadGridMoveDirection(userInputManager.GetDirection());
 
                 if (moveIntervalTimer >= moveIntervalTimerMax)
@@ -84,7 +82,7 @@ public class GameHandler : MonoBehaviour
                     snake.RemoveLastBodyPosition();
 
                     userInputManager.moveCounter += 1;
-                    moveIntervalTimer -= moveIntervalTimerMax;
+                    DecreaseMoveIntervalTimer();
                 }
 
                 break;
@@ -98,13 +96,15 @@ public class GameHandler : MonoBehaviour
 
     private bool HasSelfCollided()
     {
+        if (snake.bodyPartList == null) return false;
+
         foreach (SnakeBodyPart snakeBodyPart in snake.bodyPartList)
         {
             Vector2Int snakeBodyPartGridPosition = snakeBodyPart.GetGridPosition();
 
             if (snake.headGridPosition == snakeBodyPartGridPosition)
             {
-                return true; 
+                return true;
             }
         }
         return false;
@@ -126,25 +126,25 @@ public class GameHandler : MonoBehaviour
     private void HandleFood()
     {
         Food food = foodContainer.GetFoodAtPosition(snake.headGridPosition);
-        var chance = UnityEngine.Random.Range(0f, 0.9f);
 
-        Debug.Log($"Food: {food} | FoodContainer: {foodContainer.foodDictionary.Count} items | FoodContainer contents: [{string.Join(", ", foodContainer.foodDictionary.Select(kv => $"{kv.Key} : {kv.Value.GetType().Name}"))}]");
+        //Debug.Log($"Food: {food} | FoodContainer: {foodContainer.foodDictionary.Count} items | FoodContainer contents: [{string.Join(", ", foodContainer.foodDictionary.Select(kv => $"{kv.Key} : {kv.Value.GetType().Name}"))}]");
 
         AddScore(food.GetScore());
         foodContainer.RemoveFood(food);
 
-        if (food is RegularFood)
+        switch (food)
         {
-            foodContainer.SpawnFood(levelGrid, 1, FoodType.Regular);
+            case RegularFood _:
+                foodContainer.SpawnFood(levelGrid, 1, FoodType.Regular);
+                break;
+
+            case BonusFood _:
+                StopCoroutine(CountdownTimer());
+                TimerWindow.HideStatic();
+                break;
         }
 
-        if (food is BonusFood)
-        {
-            StopCoroutine(CountdownTimer());
-            TimerWindow.HideStatic();
-        }
-
-        if (!foodContainer.HasFood(FoodType.Bonus) && chance <= 0.2 && bonusCountdown <= 0f)
+        if (ShouldSpawnBonusFood())
         {
             foodContainer.SpawnFood(levelGrid, 1, FoodType.Bonus);
             bonusCountdown = 10f;
@@ -156,6 +156,15 @@ public class GameHandler : MonoBehaviour
         snake.CreateBodyPart();
     }
 
+    bool ShouldSpawnBonusFood()
+    {
+        var chance = UnityEngine.Random.Range(0f, 0.9f);
+
+        return !foodContainer.HasFood(FoodType.Bonus)
+            && chance <= 0.2
+            && bonusCountdown <= 0f;
+    }
+
     private void RemoveBonusFood()
     {
         foreach (var food in foodContainer.foodDictionary.Values.ToList())
@@ -163,6 +172,7 @@ public class GameHandler : MonoBehaviour
             if (food is BonusFood)
             {
                 foodContainer.RemoveFood(food);
+                levelGrid.cell[food.GetPosition().x, food.GetPosition().y].SetEmpty();
                 break;
             }
         }
@@ -189,9 +199,14 @@ public class GameHandler : MonoBehaviour
         GameOverWindow.ShowStatic();
     }
 
-    public void UpdateMoveInterval()
+    public void IncreaseMoveIntervalTimer()
     {
         moveIntervalTimer += Time.deltaTime;
+    }
+
+    public void DecreaseMoveIntervalTimer()
+    {
+        moveIntervalTimer -= moveIntervalTimerMax;
     }
 
     public static void ResumeGame()
