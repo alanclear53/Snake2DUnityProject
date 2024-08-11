@@ -11,7 +11,6 @@ public class GameAssets : MonoBehaviour
     public Sprite snakeTailSprite;
     public Sprite foodSprite;
     public Sprite bonusFoodSprite;
-    public Sprite snakeBodyCornerSprite;
 
     private void Awake()
     {

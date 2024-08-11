@@ -175,53 +175,15 @@ public class Snake : MonoBehaviour
             this.SnakeMovePosition = snakeMovePosition;
             transform.position = new Vector3(snakeMovePosition.GetGridPosition().x, snakeMovePosition.GetGridPosition().y);
 
-            float angle;
-            int y = 0;
-
-            //поворот тела змеи
-            if (snakeMovePosition.GetPreviousSnakeMovePosition() != null)
+            InputManager.Direction direction = snakeMovePosition.GetPreviousSnakeMovePosition()?.GetDirection() ?? snakeMovePosition.GetDirection();
+            (float angle, int y) = direction switch
             {
-                switch (snakeMovePosition.GetPreviousSnakeMovePosition().GetDirection())
-                {
-                    default:
-                    case InputManager.Direction.Up:
-                        angle = 90;
-                        break;
-                    case InputManager.Direction.Down:
-                        angle = -90;
-                        y = 180;
-                        break;
-                    case InputManager.Direction.Left:
-                        angle = 0;
-                        y = 180;
-                        break;
-                    case InputManager.Direction.Right:
-                        angle = 0;
-                        break;
-                }
-            }
-            else
-            {
-                // Если это первый элемент тела змеи, то устанавливаем направление на основе головы змеи
-                switch (snakeMovePosition.GetDirection())
-                {
-                    default:
-                    case InputManager.Direction.Up:
-                        angle = 90;
-                        break;
-                    case InputManager.Direction.Down:
-                        angle = -90;
-                        y = 180;
-                        break;
-                    case InputManager.Direction.Left:
-                        angle = 0;
-                        y = 180;
-                        break;
-                    case InputManager.Direction.Right:
-                        angle = 0;
-                        break;
-                }
-            }
+                InputManager.Direction.Up => (90, 0),
+                InputManager.Direction.Down => (-90, 180),
+                InputManager.Direction.Left => (0, 180),
+                InputManager.Direction.Right => (0, 0),
+                _ => (0, 0) // default value
+            };
 
             transform.eulerAngles = new Vector3(0, y, angle);
         }
