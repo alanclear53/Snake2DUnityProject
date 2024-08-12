@@ -8,6 +8,7 @@ public class GameAssets : MonoBehaviour
     public Sprite snakeHeadMouthOpenSprite;
     public Sprite snakeBodySprite;
     public Sprite snakeBodyFullStomachSprite;
+    public Sprite snakeBodyCornerSprite;
     public Sprite snakeTailSprite;
     public Sprite foodSprite;
     public Sprite bonusFoodSprite;
