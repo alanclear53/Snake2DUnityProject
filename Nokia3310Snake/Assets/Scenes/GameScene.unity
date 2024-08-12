@@ -1730,8 +1730,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f795b932ef9c33f43ba55a7aca39ca1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snakeHeadSprite: {fileID: 21300000, guid: 10f4497955bb032459e7114400ba028a, type: 3}
-  snakeHeadMouthOpenSprite: {fileID: 21300000, guid: c44e7d63b5456d744a1cbf8018b24d25, type: 3}
+  snakeHeadSprite: {fileID: 21300000, guid: 13d1ab8a00f051e48a5d97bd1b5114a8, type: 3}
+  snakeHeadMouthOpenSprite: {fileID: 21300000, guid: 07a04ae47957e8e4ba081c6efa95c357, type: 3}
   snakeBodySprite: {fileID: 21300000, guid: de2ab9b395ed6f443af3e6a0bf3ddeea, type: 3}
   snakeBodyFullStomachSprite: {fileID: 21300000, guid: 520bd4fe84104424aa1165afac96680b, type: 3}
   snakeBodyCornerSprite: {fileID: 21300000, guid: e021fa6e3d83c5d49a356c32a129efbe, type: 3}
